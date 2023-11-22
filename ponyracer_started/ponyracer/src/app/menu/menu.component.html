@@ -1,0 +1,15 @@
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand">PonyRacer</a>
+      <button type="button" class="navbar-toggler">
+        <span class="navbar-toggler-icon" (click) ="toggleNavbar()"></span>
+      </button>
+      <div id="navbar" class="navbar-collapse" [ngClass]="navbarCollapsed === true ? 'collapse' : 'visible'">
+        <ul class="navbar-nav me-auto" >
+          <li class="nav-item">
+            <a class="nav-link">Races</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
