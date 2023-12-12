@@ -5,9 +5,9 @@
     "passes": 2,
     "pending": 0,
     "failures": 0,
-    "start": "2023-12-12T09:54:01.307Z",
-    "end": "2023-12-12T09:54:01.737Z",
-    "duration": 430,
+    "start": "2023-12-12T16:29:16.716Z",
+    "end": "2023-12-12T16:29:17.284Z",
+    "duration": 568,
     "testsRegistered": 2,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "20b436c4-112b-47c5-9f7c-42d60435ba68",
+      "uuid": "1432a67b-5702-4446-8a94-805c3c9f793d",
       "title": "",
       "fullFile": "cypress/e2e/races.cy.ts",
       "file": "cypress/e2e/races.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "84b1f648-935c-4254-bea7-86aa1b1a1ec2",
+          "uuid": "1bde8de8-5e84-4366-9248-b2bdaf351bbc",
           "title": "Races",
           "fullFile": "",
           "file": "",
@@ -38,7 +38,7 @@
               "title": "should display a race list",
               "fullTitle": "Races should display a race list",
               "timedOut": null,
-              "duration": 299,
+              "duration": 390,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -47,8 +47,8 @@
               "context": null,
               "code": "cy.visit('/races');\ncy.wait('@getRaces');\ncy.get('h2').should('have.length', 2);\ncy.get('p').should('have.length', 2).and('contain', 'ago');",
               "err": {},
-              "uuid": "e6f91334-9070-4d99-935b-76955b8fd10e",
-              "parentUUID": "84b1f648-935c-4254-bea7-86aa1b1a1ec2",
+              "uuid": "3f7d61f4-1b43-4848-b507-5c677d9e6d02",
+              "parentUUID": "1bde8de8-5e84-4366-9248-b2bdaf351bbc",
               "isHook": false,
               "skipped": false
             },
@@ -56,7 +56,7 @@
               "title": "should display ponies",
               "fullTitle": "Races should display ponies",
               "timedOut": null,
-              "duration": 120,
+              "duration": 158,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -65,21 +65,21 @@
               "context": null,
               "code": "cy.visit('/races');\ncy.wait('@getRaces');\ncy.get('figure').should('have.length', 10);\ncy.get('img').should('have.length', 10);\ncy.get('figcaption').should('have.length', 10);",
               "err": {},
-              "uuid": "d95776ca-1c85-47ad-948a-a358f57895b3",
-              "parentUUID": "84b1f648-935c-4254-bea7-86aa1b1a1ec2",
+              "uuid": "ad321616-119f-4da5-b698-f7d37629a27b",
+              "parentUUID": "1bde8de8-5e84-4366-9248-b2bdaf351bbc",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "e6f91334-9070-4d99-935b-76955b8fd10e",
-            "d95776ca-1c85-47ad-948a-a358f57895b3"
+            "3f7d61f4-1b43-4848-b507-5c677d9e6d02",
+            "ad321616-119f-4da5-b698-f7d37629a27b"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 419,
+          "duration": 548,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
