@@ -4,18 +4,18 @@
     <button type="button" class="navbar-toggler" (click)="toggleNavbar()">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div id="navbar" class="navbar-collapse" [ngClass]="{ 'collapse': navbarCollapsed }">
+    <div id="navbar" class="navbar-collapse" [class.collapse]="navbarCollapsed">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/races">Races</a>
+          <a class="nav-link" *ngIf="user" routerLink="/races">Races</a>
         </li>
       </ul>
-      <ul class="navbar-nav">
+      <ul class="navbar-nav" *ngIf="user">
         <li class="navbar-text">
           <span id="current-user" class="me-2">
-            {{ user?.login }}
+            {{ user.login }}
             <span class="fa fa-star"></span>
-            {{ user?.money }}
+            {{ user.money }}
           </span>
         </li>
       </ul>
