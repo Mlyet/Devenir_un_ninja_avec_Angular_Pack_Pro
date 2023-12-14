@@ -18,6 +18,11 @@
             {{ user.money }}
           </span>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" id="logout-link" role="button">
+            <span class="fa fa-power-off" (click)="logout($event)"></span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>
