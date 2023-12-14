@@ -13,6 +13,6 @@ export class RaceService {
   constructor(private http: HttpClient) {}
 
   list(): Observable<Array<RaceModel>> {
-    return this.http.get<Array<RaceModel>>(environment + '/api/races?status=PENDING');
+    return this.http.get<Array<RaceModel>>(environment.baseUrl + '/api/races?status=PENDING');
   }
 }
