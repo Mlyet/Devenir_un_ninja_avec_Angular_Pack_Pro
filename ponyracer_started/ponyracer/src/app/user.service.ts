@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 
 import { UserModel } from './models/user.model';
 import { Observable } from 'rxjs';
+import { WsService } from './ws.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class UserService {
   // userUrl = 'https://ponyracer.ninja-squad.com';
   userEvents = new BehaviorSubject<UserModel | null>(null);
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private wsService: WsService) {
     this.retrieveUser();
   }
 
@@ -48,5 +49,8 @@ export class UserService {
 
   getCurrentUser(): UserModel | null {
     return this.userEvents.getValue();
+  }
+  scoreUpdates(userId: number): Observable<UserModel> {
+    return this.wsService.connect(`/player/${userId}`);
   }
 }

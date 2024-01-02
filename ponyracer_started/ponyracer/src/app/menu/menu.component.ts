@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { UserService } from '../user.service';
-import { Subscription } from 'rxjs';
+import { EMPTY, Subscription, catchError, concat, of, switchMap } from 'rxjs';
 import { UserModel } from '../models/user.model';
 import { Router } from '@angular/router';
 
@@ -15,7 +15,9 @@ export class MenuComponent implements OnDestroy {
   userEventsSubscription: Subscription | null = null;
 
   constructor(private userService: UserService, private router: Router) {
-    this.userEventsSubscription = this.userService.userEvents.subscribe(user => (this.user = user));
+    this.userEventsSubscription = this.userService.userEvents
+      .pipe(switchMap(user => (user ? concat(of(user), this.userService.scoreUpdates(user.id).pipe(catchError(() => EMPTY))) : of(null))))
+      .subscribe(userWithScore => (this.user = userWithScore));
   }
   toggleNavbar(): void {
     // console.log(this.navbarCollapsed);
