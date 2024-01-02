@@ -9,9 +9,11 @@ import { PonyModel } from '../models/pony.model';
 export class PonyComponent {
   @Input() ponyModel!: PonyModel;
   @Input() isRunning = false;
-  @Output() ponyClicked = new EventEmitter<PonyModel>();
+  @Input() isBoosted: boolean | undefined = false;
+  @Output() readonly ponyClicked = new EventEmitter<PonyModel>();
+
   getPonyImageUrl(): string {
-    return `assets/images/pony-${this.ponyModel.color.toLowerCase()}${this.isRunning ? '-running' : ''}.gif`;
+    return `assets/images/pony-${this.ponyModel.color.toLowerCase()}${this.isBoosted ? '-rainbow' : this.isRunning ? '-running' : ''}.gif`;
   }
   clicked(): void {
     this.ponyClicked.emit(this.ponyModel);
