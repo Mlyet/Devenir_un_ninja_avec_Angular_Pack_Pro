@@ -1,21 +1,20 @@
 import { Component } from '@angular/core';
-import { RaceModel } from '../models/race.model';
 import { ActivatedRoute } from '@angular/router';
+
 import { RaceService } from '../race.service';
+import { RaceModel } from '../models/race.model';
 import { PonyModel } from '../models/pony.model';
 
 @Component({
-  selector: 'pr-bet',
   templateUrl: './bet.component.html',
   styleUrls: ['./bet.component.css']
 })
 export class BetComponent {
-  raceModel: RaceModel | null = null;
+  raceModel!: RaceModel;
   betFailed = false;
 
   constructor(private raceService: RaceService, private route: ActivatedRoute) {
-    const raceId = +this.route.snapshot.paramMap.get('raceId')!;
-    this.raceService.get(raceId).subscribe(race => (this.raceModel = race));
+    this.raceModel = this.route.snapshot.data['race'];
   }
 
   betOnPony(pony: PonyModel): void {
