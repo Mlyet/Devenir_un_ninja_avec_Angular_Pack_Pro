@@ -5,9 +5,9 @@
     "passes": 2,
     "pending": 0,
     "failures": 0,
-    "start": "2024-01-02T16:01:12.337Z",
-    "end": "2024-01-02T16:01:14.057Z",
-    "duration": 1720,
+    "start": "2024-01-04T09:33:54.908Z",
+    "end": "2024-01-04T09:33:56.629Z",
+    "duration": 1721,
     "testsRegistered": 2,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "b23c14a4-69db-43b7-8f6f-cf9ab435e462",
+      "uuid": "8d3e00b8-767b-4cc8-934b-db044f5a75fb",
       "title": "",
       "fullFile": "cypress/e2e/login.cy.ts",
       "file": "cypress/e2e/login.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "5c4412f1-1e24-40c0-81e4-acb9f2833e40",
+          "uuid": "b02266f3-ffd8-409a-85f2-1f08962ece8a",
           "title": "Login",
           "fullFile": "",
           "file": "",
@@ -38,7 +38,7 @@
               "title": "should display a login page",
               "fullTitle": "Login should display a login page",
               "timedOut": null,
-              "duration": 1151,
+              "duration": 1160,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -47,8 +47,8 @@
               "context": null,
               "code": "cy.visit('/login');\ncy.get('button').should('be.visible').and('be.disabled');\nloginInput().type('c');\nloginInput().clear();\nerrorMessage().should('be.visible').and('contain', 'Login is required');\nloginInput().type('ced');\nerrorMessage().should('not.exist');\npasswordInput().type('p');\npasswordInput().clear();\nerrorMessage().should('be.visible').and('contain', 'Password is required');\npasswordInput().type('pa');\nerrorMessage().should('not.exist');\nsubmitButton().click();\ncy.wait('@authenticateUser');\ncy.location('pathname').should('eq', '/');",
               "err": {},
-              "uuid": "ceb07804-1f6c-41c4-802a-1cb27acf7bf9",
-              "parentUUID": "5c4412f1-1e24-40c0-81e4-acb9f2833e40",
+              "uuid": "0d916d2b-5ccc-4494-b4a2-0f45977bad7a",
+              "parentUUID": "b02266f3-ffd8-409a-85f2-1f08962ece8a",
               "isHook": false,
               "skipped": false
             },
@@ -56,7 +56,7 @@
               "title": "should display an alert if login fails",
               "fullTitle": "Login should display an alert if login fails",
               "timedOut": null,
-              "duration": 548,
+              "duration": 538,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -65,21 +65,21 @@
               "context": null,
               "code": "cy.visit('/login');\ncy.intercept('POST', 'api/users/authentication', {\n    statusCode: 404\n}).as('failedAuthenticateUser');\nloginInput().type('ced');\npasswordInput().type('pa');\nsubmitButton().click();\ncy.wait('@failedAuthenticateUser');\ncy.location('pathname').should('eq', '/login');\ncy.get('.alert-danger').should('contain', 'Nope, try again');",
               "err": {},
-              "uuid": "7127fa20-8f3c-4963-bb5e-e4b7891cd25a",
-              "parentUUID": "5c4412f1-1e24-40c0-81e4-acb9f2833e40",
+              "uuid": "e15419e1-63ba-4c45-bb4b-d20402e3cb07",
+              "parentUUID": "b02266f3-ffd8-409a-85f2-1f08962ece8a",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "ceb07804-1f6c-41c4-802a-1cb27acf7bf9",
-            "7127fa20-8f3c-4963-bb5e-e4b7891cd25a"
+            "0d916d2b-5ccc-4494-b4a2-0f45977bad7a",
+            "e15419e1-63ba-4c45-bb4b-d20402e3cb07"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 1699,
+          "duration": 1698,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
