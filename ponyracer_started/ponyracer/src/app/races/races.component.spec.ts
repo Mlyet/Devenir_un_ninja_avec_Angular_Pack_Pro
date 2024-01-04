@@ -2,41 +2,36 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { Router, RouterOutlet } from '@angular/router';
 import { Location } from '@angular/common';
 import { By } from '@angular/platform-browser';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 
+import { AppModule } from '../app.module';
+import { RacesModule } from './races.module';
 import { RacesComponent } from './races.component';
+import { AppComponent } from '../app.component';
 import { PendingRacesComponent } from './pending-races/pending-races.component';
 import { FinishedRacesComponent } from './finished-races/finished-races.component';
 import { RaceService } from '../race.service';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ROUTES } from '../app.routes';
-import { AppComponent } from '../app.component';
-import { UserService } from '../user.service';
-import { UserModel } from '../models/user.model';
-import { MenuComponent } from '../menu/menu.component';
+import { RACES_ROUTES } from './races.routes';
 
 describe('RacesComponent', () => {
-  let fixture: ComponentFixture<AppComponent>;
+  let appComponentFixture: ComponentFixture<AppComponent>;
   let raceService: jasmine.SpyObj<RaceService>;
-  let userService: jasmine.SpyObj<UserService>;
 
   beforeEach(() => {
     raceService = jasmine.createSpyObj<RaceService>('RaceService', ['list']);
-    userService = jasmine.createSpyObj<UserService>('UserService', ['getCurrentUser'], {
-      userEvents: new BehaviorSubject({} as UserModel | null)
-    });
     TestBed.configureTestingModule({
-      declarations: [AppComponent, MenuComponent, RacesComponent, PendingRacesComponent, FinishedRacesComponent],
-      imports: [RouterTestingModule.withRoutes(ROUTES)],
-      providers: [
-        { provide: RaceService, useValue: raceService },
-        { provide: UserService, useValue: userService }
-      ]
+      imports: [AppModule, RacesModule],
+      providers: [{ provide: RaceService, useValue: raceService }]
     });
-    fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
+
     raceService.list.and.returnValue(of([]));
-    userService.getCurrentUser.and.returnValue({} as UserModel);
+
+    // override the lazy loaded module
+    const router = TestBed.inject(Router);
+    router.resetConfig([{ path: 'races', children: RACES_ROUTES }]);
+
+    appComponentFixture = TestBed.createComponent(AppComponent);
+    appComponentFixture.detectChanges();
   });
 
   it('should redirect from /races to /races/pending', fakeAsync(() => {
@@ -54,9 +49,9 @@ describe('RacesComponent', () => {
     router.navigateByUrl('/races');
 
     tick();
-    fixture.detectChanges();
+    appComponentFixture.detectChanges();
 
-    const racesComponent = fixture.debugElement.query(By.directive(RacesComponent));
+    const racesComponent = appComponentFixture.debugElement.query(By.directive(RacesComponent));
 
     const tabLinks = racesComponent.nativeElement.querySelectorAll('.nav.nav-tabs .nav-item a.nav-link');
     expect(tabLinks.length).withContext('You should have two tabs, one for pending races, one for the finished races').toBe(2);
@@ -70,7 +65,7 @@ describe('RacesComponent', () => {
 
     tick();
 
-    const racesComponent = fixture.debugElement.query(By.directive(RacesComponent));
+    const racesComponent = appComponentFixture.debugElement.query(By.directive(RacesComponent));
     const outlet = racesComponent.query(By.directive(RouterOutlet));
 
     expect(outlet).withContext('You must have a router-outlet in your template').not.toBeNull();
@@ -81,10 +76,10 @@ describe('RacesComponent', () => {
     router.navigateByUrl('/races');
 
     tick();
-    fixture.detectChanges();
+    appComponentFixture.detectChanges();
     tick();
 
-    const racesComponent = fixture.debugElement.query(By.directive(RacesComponent));
+    const racesComponent = appComponentFixture.debugElement.query(By.directive(RacesComponent));
     const links = racesComponent.nativeElement.querySelectorAll('a.nav-link');
     expect(links.length).withContext('You must have two links').toBe(2);
     expect(links[0].className.split(' ')).withContext('The first link should be active').toContain('active');
@@ -96,10 +91,10 @@ describe('RacesComponent', () => {
     router.navigateByUrl('/races/finished');
 
     tick();
-    fixture.detectChanges();
+    appComponentFixture.detectChanges();
     tick();
 
-    const racesComponent = fixture.debugElement.query(By.directive(RacesComponent));
+    const racesComponent = appComponentFixture.debugElement.query(By.directive(RacesComponent));
     const links = racesComponent.nativeElement.querySelectorAll('a.nav-link');
     expect(links.length).withContext('You must have two links').toBe(2);
     expect(links[0].className.split(' ')).not.withContext('The first link should not be active').toContain('active');
@@ -111,10 +106,10 @@ describe('RacesComponent', () => {
     router.navigateByUrl('/races');
 
     tick();
-    fixture.detectChanges();
+    appComponentFixture.detectChanges();
 
-    const pendingRacesComponent = fixture.debugElement.query(By.directive(PendingRacesComponent));
-    const finishedRacesComponent = fixture.debugElement.query(By.directive(FinishedRacesComponent));
+    const pendingRacesComponent = appComponentFixture.debugElement.query(By.directive(PendingRacesComponent));
+    const finishedRacesComponent = appComponentFixture.debugElement.query(By.directive(FinishedRacesComponent));
 
     expect(pendingRacesComponent)
       .withContext('The router should display the PendingRacesComponent in the first tab for /races')
@@ -127,10 +122,10 @@ describe('RacesComponent', () => {
     router.navigateByUrl('/races/finished');
 
     tick();
-    fixture.detectChanges();
+    appComponentFixture.detectChanges();
 
-    const pendingRacesComponent = fixture.debugElement.query(By.directive(PendingRacesComponent));
-    const finishedRacesComponent = fixture.debugElement.query(By.directive(FinishedRacesComponent));
+    const pendingRacesComponent = appComponentFixture.debugElement.query(By.directive(PendingRacesComponent));
+    const finishedRacesComponent = appComponentFixture.debugElement.query(By.directive(FinishedRacesComponent));
 
     expect(pendingRacesComponent).withContext('The router should not display the PendingRacesComponent for /races/finished').toBeNull();
     expect(finishedRacesComponent).withContext('The router should display the FinishedRacesComponent for /races/finished').not.toBeNull();
@@ -141,13 +136,13 @@ describe('RacesComponent', () => {
     router.navigateByUrl('/races');
 
     tick();
-    fixture.detectChanges();
+    appComponentFixture.detectChanges();
 
-    const racesComponent = fixture.debugElement.query(By.directive(RacesComponent));
+    const racesComponent = appComponentFixture.debugElement.query(By.directive(RacesComponent));
     racesComponent.nativeElement.querySelectorAll('a')[1].click();
 
     tick();
-    fixture.detectChanges();
+    appComponentFixture.detectChanges();
 
     const location = TestBed.inject(Location);
 
@@ -159,13 +154,13 @@ describe('RacesComponent', () => {
     router.navigateByUrl('/races/finished');
 
     tick();
-    fixture.detectChanges();
+    appComponentFixture.detectChanges();
 
-    const racesComponent = fixture.debugElement.query(By.directive(RacesComponent));
+    const racesComponent = appComponentFixture.debugElement.query(By.directive(RacesComponent));
     racesComponent.nativeElement.querySelectorAll('a')[0].click();
 
     tick();
-    fixture.detectChanges();
+    appComponentFixture.detectChanges();
 
     const location = TestBed.inject(Location);
 
