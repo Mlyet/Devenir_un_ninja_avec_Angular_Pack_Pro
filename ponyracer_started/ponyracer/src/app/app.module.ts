@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import { HomeComponent } from './home/home.component';
 import { JwtInterceptor } from './jwt.interceptor';
+// import { AlertComponent } from './shared/alert/alert.component';
 
 @NgModule({
   declarations: [AppComponent, MenuComponent, HomeComponent],

@@ -5,9 +5,9 @@
     "passes": 3,
     "pending": 0,
     "failures": 0,
-    "start": "2024-01-04T17:01:20.809Z",
-    "end": "2024-01-04T17:01:21.603Z",
-    "duration": 794,
+    "start": "2024-01-09T09:23:07.781Z",
+    "end": "2024-01-09T09:23:08.578Z",
+    "duration": 797,
     "testsRegistered": 3,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "feb14d6a-38d8-42a9-98bd-aa4db60687c3",
+      "uuid": "8c03ad12-3889-4ef9-8d38-8be8c6c0528b",
       "title": "",
       "fullFile": "cypress/e2e/races.cy.ts",
       "file": "cypress/e2e/races.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "22e0cfa6-8668-40ca-a908-25d8ec1647a2",
+          "uuid": "75909f87-6356-442c-99a7-496e95eec7a9",
           "title": "Races",
           "fullFile": "",
           "file": "",
@@ -38,7 +38,7 @@
               "title": "should display a list of pending races by default",
               "fullTitle": "Races should display a list of pending races by default",
               "timedOut": null,
-              "duration": 423,
+              "duration": 429,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -47,8 +47,8 @@
               "context": null,
               "code": "cy.visit('/races');\n// should redirect to home page as the user is not logged\ncy.location('pathname')\n    .should('eq', '/')\n    .then(\n// log the user and try again\n() => storeUserInLocalStorage());\ncy.visit('/races');\ncy.location('pathname').should('eq', '/races/pending');\ncy.wait('@getPendingRaces');\ncy.get('h2').should('have.length', 2);\ncy.get('p').should('have.length', 2).and('contain', 'ago');",
               "err": {},
-              "uuid": "bd5dcd2d-30f2-4cee-9ac8-1009b398d8f0",
-              "parentUUID": "22e0cfa6-8668-40ca-a908-25d8ec1647a2",
+              "uuid": "14a93ba8-b6c9-448b-b35e-6c57788bc70c",
+              "parentUUID": "75909f87-6356-442c-99a7-496e95eec7a9",
               "isHook": false,
               "skipped": false
             },
@@ -65,8 +65,8 @@
               "context": null,
               "code": "storeUserInLocalStorage();\ncy.visit('/races');\ncy.wait('@getPendingRaces');\ncy.get('figure').should('have.length', 10);\ncy.get('img').should('have.length', 10);\ncy.get('figcaption').should('have.length', 10);",
               "err": {},
-              "uuid": "5689f027-3bb6-418c-b2ac-085ce6774c38",
-              "parentUUID": "22e0cfa6-8668-40ca-a908-25d8ec1647a2",
+              "uuid": "0ca540c8-26e2-4921-949b-2aac9d79db34",
+              "parentUUID": "75909f87-6356-442c-99a7-496e95eec7a9",
               "isHook": false,
               "skipped": false
             },
@@ -74,7 +74,7 @@
               "title": "should display a list of finished races in another tab",
               "fullTitle": "Races should display a list of finished races in another tab",
               "timedOut": null,
-              "duration": 219,
+              "duration": 216,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -83,22 +83,22 @@
               "context": null,
               "code": "storeUserInLocalStorage();\ncy.visit('/races/pending');\ncy.wait('@getPendingRaces');\nconst pendingRacesTab = () => cy.get('.nav-tabs .nav-link').first();\nconst finishedRacesTab = () => cy.get('.nav-tabs .nav-link').eq(1);\npendingRacesTab().should('have.class', 'active').and('contain', 'Pending races');\nfinishedRacesTab().should('not.have.class', 'active').and('contain', 'Finished races');\nfinishedRacesTab().click();\ncy.location('pathname').should('eq', '/races/finished');\ncy.wait('@getFinishedRaces');\npendingRacesTab().should('not.have.class', 'active');\nfinishedRacesTab().should('have.class', 'active');\ncy.get('h2').should('have.length', 1);\ncy.get('p').should('have.length', 1).and('contain', 'ago');",
               "err": {},
-              "uuid": "d28cdab8-7db4-4f20-b449-86d2d9f21038",
-              "parentUUID": "22e0cfa6-8668-40ca-a908-25d8ec1647a2",
+              "uuid": "907175e3-9e0a-48f9-aebe-d03b1d6a39ab",
+              "parentUUID": "75909f87-6356-442c-99a7-496e95eec7a9",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "bd5dcd2d-30f2-4cee-9ac8-1009b398d8f0",
-            "5689f027-3bb6-418c-b2ac-085ce6774c38",
-            "d28cdab8-7db4-4f20-b449-86d2d9f21038"
+            "14a93ba8-b6c9-448b-b35e-6c57788bc70c",
+            "0ca540c8-26e2-4921-949b-2aac9d79db34",
+            "907175e3-9e0a-48f9-aebe-d03b1d6a39ab"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 778,
+          "duration": 781,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
