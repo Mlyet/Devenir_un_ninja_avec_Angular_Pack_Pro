@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AlertComponent } from './alert/alert.component';
+import { FormControlValidationDirective } from './form-control-validation.directive';
+import { FormLabelDirective } from './form-label.directive';
+import { FormLabelValidationDirective } from './form-label-validation.directive';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [AlertComponent],
-  exports: [AlertComponent]
+  declarations: [AlertComponent, FormControlValidationDirective, FormLabelDirective, FormLabelValidationDirective],
+  exports: [AlertComponent, FormControlValidationDirective]
 })
 export class SharedModule {}
