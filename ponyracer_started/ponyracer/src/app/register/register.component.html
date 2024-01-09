@@ -2,7 +2,7 @@
   <div class="col-md-6 offset-md-3">
     <h1>Sign up</h1>
 
-    <pr-alert *ngIf="registrationFailed" type="danger" (closed)="registrationFailed = false">Try again with another login.</pr-alert>
+    <ngb-alert *ngIf="registrationFailed" type="danger" (closed)="registrationFailed = false">Try again with another login.</ngb-alert>
 
     <form (ngSubmit)="register()" [formGroup]="userForm">
       <div class="mb-3" prFormLabelValidation>
