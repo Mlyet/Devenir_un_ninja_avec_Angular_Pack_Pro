@@ -11,16 +11,18 @@
         </li>
       </ul>
       <ul class="navbar-nav" *ngIf="user">
-        <li class="navbar-text">
-          <span id="current-user" class="me-2">
-            {{ user.login }}
-            <span class="fa fa-star"></span>
-            {{ user.money }}
-          </span>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/users/money/history">
+            <span id="current-user" class="me-2">
+              {{ user.login }}
+              <span class="fa fa-star"></span>
+              {{ user.money }}
+            </span>
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="logout-link" role="button">
-            <span class="fa fa-power-off" (click)="logout($event)"></span>
+          <a id="logout-link" (click)="logout($event)" class="nav-link" role="button">
+            <span class="fa fa-power-off"></span>
           </a>
         </li>
       </ul>

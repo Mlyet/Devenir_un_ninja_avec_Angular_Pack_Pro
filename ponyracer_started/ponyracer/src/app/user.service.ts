@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { UserModel } from './models/user.model';
 import { Observable } from 'rxjs';
 import { WsService } from './ws.service';
+import { MoneyHistoryModel } from './models/money-history.model';
 
 @Injectable({
   providedIn: 'root'
@@ -52,5 +53,8 @@ export class UserService {
   }
   scoreUpdates(userId: number): Observable<UserModel> {
     return this.wsService.connect(`/player/${userId}`);
+  }
+  getMoneyHistory(): Observable<Array<MoneyHistoryModel>> {
+    return this.http.get<Array<MoneyHistoryModel>>(environment.baseUrl + '/api/money/history');
   }
 }
