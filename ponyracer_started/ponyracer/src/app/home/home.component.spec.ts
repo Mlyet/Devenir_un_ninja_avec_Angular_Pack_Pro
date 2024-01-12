@@ -1,18 +1,18 @@
+import { signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject } from 'rxjs';
-
-import { HomeComponent } from './home.component';
+import { provideRouter } from '@angular/router';
 import { UserModel } from '../models/user.model';
 import { UserService } from '../user.service';
+import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
+  let currentUser: WritableSignal<UserModel | null>;
+
   beforeEach(() => {
-    const userService = { userEvents: new BehaviorSubject<UserModel | null>(null) } as UserService;
+    currentUser = signal(null);
+    const userService = jasmine.createSpyObj<UserService>('UserService', [], { currentUser });
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [HomeComponent],
-      providers: [{ provide: UserService, useValue: userService }]
+      providers: [provideRouter([]), { provide: UserService, useValue: userService }]
     });
   });
 
@@ -37,48 +37,24 @@ describe('HomeComponent', () => {
     const element = fixture.nativeElement;
     fixture.detectChanges();
 
-    fixture.componentInstance.user = null;
-    fixture.detectChanges();
-
-    const button = element.querySelector('a[href="/users/login"]');
+    const button = element.querySelector('a[href="/login"]');
     expect(button)
       .withContext('You should have an `a` element to display the link to the login. Maybe you forgot to use `routerLink`?')
       .not.toBeNull();
     expect(button.textContent).withContext('The link should have a text').toContain('Login');
 
-    const buttonRegister = element.querySelector('a[href="/users/register"]');
+    const buttonRegister = element.querySelector('a[href="/register"]');
     expect(buttonRegister)
       .withContext('You should have an `a` element to display the link to the register page. Maybe you forgot to use `routerLink`?')
       .not.toBeNull();
     expect(buttonRegister.textContent).withContext('The link should have a text').toContain('Register');
   });
 
-  it('should listen to userEvents', () => {
-    const userService = TestBed.inject(UserService);
-    const fixture = TestBed.createComponent(HomeComponent);
-
-    const user = { login: 'cedric', money: 200 } as UserModel;
-
-    userService.userEvents.next(user);
-
-    userService.userEvents.subscribe(() => {
-      expect(fixture.componentInstance.user).withContext('Your component should listen to the `userEvents` observable').toBe(user);
-    });
-  });
-
-  it('should unsubscribe on destroy', () => {
-    const fixture = TestBed.createComponent(HomeComponent);
-    spyOn(fixture.componentInstance.userEventsSubscription!, 'unsubscribe');
-    fixture.componentInstance.ngOnDestroy();
-
-    expect(fixture.componentInstance.userEventsSubscription!.unsubscribe).toHaveBeenCalled();
-  });
-
   it('should display only a link to go the races page if logged in', () => {
     const fixture = TestBed.createComponent(HomeComponent);
     fixture.detectChanges();
 
-    fixture.componentInstance.user = { login: 'cedric' } as UserModel;
+    currentUser.set({ login: 'cedric' } as UserModel);
     fixture.detectChanges();
 
     const element = fixture.nativeElement;

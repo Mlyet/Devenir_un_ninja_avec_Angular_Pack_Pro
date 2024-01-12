@@ -1,30 +1,21 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Router, RouterLinkWithHref } from '@angular/router';
+import { signal, WritableSignal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router, RouterLink } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
-import { NgbCollapseConfig, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
-
-import { MenuComponent } from './menu.component';
 import { UserService } from '../user.service';
 import { UserModel } from '../models/user.model';
+import { MenuComponent } from './menu.component';
 
 describe('MenuComponent', () => {
-  const userService = {
-    userEvents: new Subject<UserModel>(),
-    logout: () => {},
-    scoreUpdates: (userId: number) => {}
-  } as UserService;
+  let currentUser: WritableSignal<UserModel | null>;
+  let userService: jasmine.SpyObj<UserService>;
 
   beforeEach(() => {
+    currentUser = signal(null);
+    userService = jasmine.createSpyObj<UserService>('UserService', ['logout'], { currentUser });
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, NgbCollapseModule],
-      declarations: [MenuComponent],
-      providers: [{ provide: UserService, useValue: userService }]
+      providers: [provideRouter([]), { provide: UserService, useValue: userService }]
     });
-    // turn off the animation for the collapse
-    const collapseConfig = TestBed.inject(NgbCollapseConfig);
-    collapseConfig.animation = false;
   });
 
   it('should have a `navbarCollapsed` field', () => {
@@ -62,8 +53,8 @@ describe('MenuComponent', () => {
     const navbarCollapsed = element.querySelector('#navbar');
     expect(navbarCollapsed).withContext('No element with the id `#navbar`').not.toBeNull();
     expect(navbarCollapsed.classList)
-      .withContext('The element with the id `#navbar` should use the `ngbCollapse` directive')
-      .not.toContain('show');
+      .withContext('The element with the id `#navbar` should have the class `collapse`')
+      .toContain('collapse');
 
     const button = element.querySelector('button');
     expect(button).withContext('No `button` element to collapse the menu').not.toBeNull();
@@ -72,7 +63,9 @@ describe('MenuComponent', () => {
     fixture.detectChanges();
 
     const navbar = element.querySelector('#navbar');
-    expect(navbar.classList).withContext('The element with the id `#navbar` should use the `ngbCollapse` directive').toContain('show');
+    expect(navbar.classList)
+      .withContext('The element with the id `#navbar` should have not the class `collapse` after a click')
+      .not.toContain('collapse');
   });
 
   it('should use routerLink to navigate', () => {
@@ -80,87 +73,38 @@ describe('MenuComponent', () => {
 
     fixture.detectChanges();
 
-    const links = fixture.debugElement.queryAll(By.directive(RouterLinkWithHref));
+    const links = fixture.debugElement.queryAll(By.directive(RouterLink));
     expect(links.length).withContext('You should have only one routerLink to the home when the user is not logged').toBe(1);
 
-    fixture.componentInstance.user = { login: 'cedric', money: 200 } as UserModel;
+    currentUser.set({ login: 'cedric', money: 200 } as UserModel);
     fixture.detectChanges();
 
-    const linksAfterLogin = fixture.debugElement.queryAll(By.directive(RouterLinkWithHref));
-    expect(linksAfterLogin.length)
-      .withContext('You should have three routerLink: one to the races, one to the home, one to the money history when the user is logged')
-      .toBe(3);
+    const linksAfterLogin = fixture.debugElement.queryAll(By.directive(RouterLink));
+    expect(linksAfterLogin.length).withContext('You should have two routerLink: one to the races, one to the home').toBe(2);
   });
 
-  it('should listen to userEvents and score updates', fakeAsync(() => {
-    const fixture = TestBed.createComponent(MenuComponent);
-
-    // emulate a login
-    const scoreUpdates = new Subject<UserModel>();
-    spyOn(userService, 'scoreUpdates').and.returnValue(scoreUpdates);
-    const user = { id: 1, login: 'cedric', money: 200 } as UserModel;
-    userService.userEvents.next(user);
-    tick();
-
-    expect(fixture.componentInstance.user).withContext('Your component should listen to the `userEvents` observable on login').toBe(user);
-    expect(userService.scoreUpdates).toHaveBeenCalledWith(user.id);
-    tick();
-
-    // emulate a score update
-    user.money = 300;
-    scoreUpdates.next(user);
-    tick();
-
-    expect(fixture.componentInstance.user!.money).withContext('Your component should listen to the `scoreUpdates` observable').toBe(300);
-
-    // emulate an error
-    scoreUpdates.error('You should catch potential errors on score updates with a `.catch()`');
-    tick();
-    expect(fixture.componentInstance.user!.money).withContext('Your component should catch error on score updates').toBe(300);
-
-    // emulate a score update
-    user.money = 400;
-    scoreUpdates.next(user);
-    tick();
-
-    expect(fixture.componentInstance.user!.money).withContext('Your component should catch error on score updates').toBe(400);
-
-    // emulate a logout
-    userService.userEvents.next(null);
-    tick();
-
-    expect(fixture.componentInstance.user).withContext('Your component should listen to the `userEvents` observable on logout').toBe(null);
-  }));
-
-  it('should display the user if logged', () => {
+  it('should display the user if logged in', () => {
     const fixture = TestBed.createComponent(MenuComponent);
     fixture.detectChanges();
 
-    const component = fixture.componentInstance;
-    component.user = { login: 'cedric', money: 200 } as UserModel;
+    currentUser.set({ login: 'cedric', money: 200 } as UserModel);
 
     fixture.detectChanges();
 
     const element = fixture.nativeElement;
-    const info = element.querySelector('a.nav-link > #current-user');
-    expect(info).withContext('You should have an `a` element with the classes `nav-item` to display the user info').not.toBeNull();
-    expect(info.textContent).withContext('You should display the name of the user in an `a` element').toContain('cedric');
-    expect(info.textContent).withContext('You should display the score of the user in an `a` element').toContain('200');
-  });
-
-  it('should unsubscribe on destroy', () => {
-    const fixture = TestBed.createComponent(MenuComponent);
-    spyOn(fixture.componentInstance.userEventsSubscription!, 'unsubscribe');
-    fixture.componentInstance.ngOnDestroy();
-
-    expect(fixture.componentInstance.userEventsSubscription!.unsubscribe).toHaveBeenCalled();
+    const info = element.querySelector('#current-user');
+    expect(info).withContext('You should have a `span` element with the ID `current-user` to display the user info').not.toBeNull();
+    expect(info.textContent).withContext('You should display the name of the user in a `span` element').toContain('cedric');
+    expect(info.textContent).withContext('You should display the score of the user in a `span` element').toContain('200');
   });
 
   it('should display a logout button', () => {
     const fixture = TestBed.createComponent(MenuComponent);
-    const component = fixture.componentInstance;
-    component.user = { login: 'cedric', money: 200 } as UserModel;
     fixture.detectChanges();
+
+    currentUser.set({ login: 'cedric', money: 200 } as UserModel);
+    fixture.detectChanges();
+
     spyOn(fixture.componentInstance, 'logout');
 
     const element = fixture.nativeElement;
@@ -177,7 +121,6 @@ describe('MenuComponent', () => {
     spyOn(router, 'navigateByUrl');
     const fixture = TestBed.createComponent(MenuComponent);
     const event = new Event('click');
-    spyOn(userService, 'logout');
     spyOn(event, 'preventDefault');
     fixture.componentInstance.logout(event);
 
